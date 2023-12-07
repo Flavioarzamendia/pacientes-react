@@ -1,43 +1,59 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
+import { useEffect } from "react";
+import Error from "./Error";
 
-const Formularios = ({pacientes, setPacientes}) => {
-
+const Formularios = ({pacientes, setPacientes, paciente ,setPaciente}) => {
   const [nombre, setNombre] = useState("");
   const [propietario, setPropietario] = useState("");
   const [email, setEmail] = useState("");
   const [alta, setAlta] = useState("");
   const [sintomas, setSintomas] = useState("");
-  const [error, setError]= useState(false);
+  const [error, setError] = useState(false);
 
+  useEffect(() => {
+    if( Object.keys(paciente).length > 0  ) {
+        setNombre(paciente.nombre)
+        setPropietario(paciente.propietario)
+        setEmail(paciente.email)
+        setAlta(paciente.alta)
+        setSintomas(paciente.sintomas)
+        
+    }
+}, [paciente])
+
+
+  const generarId = () => {
+    const random = Math.random().toString(36).substring(2);
+    const fecha = Date.now().toString(36);
+    return random + fecha;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     // validacion del formulario
-    if([nombre, propietario, email, alta, sintomas].includes("")){
-
+    if ([nombre, propietario, email, alta, sintomas].includes("")) {
       setError(true);
       return;
-
     }
     setError(false);
-   //objeto de paciente
-     const objetoPaciente = {
+    //objeto de paciente
+    const objetoPaciente = {
       nombre,
       propietario,
       email,
       alta,
-      sintomas
-     }
-     
-     setPacientes([...pacientes, objetoPaciente]);
+      sintomas,
+      id: generarId(),
+    };
 
-     setNombre("");
-     setPropietario("");
-     setEmail("");
-     setAlta("");
-     setSintomas("");
-    
+    setPacientes([...pacientes, objetoPaciente]);
+
+    setNombre("");
+    setPropietario("");
+    setEmail("");
+    setAlta("");
+    setSintomas("");
   };
 
   return (
@@ -54,7 +70,9 @@ const Formularios = ({pacientes, setPacientes}) => {
         onSubmit={handleSubmit}
         className=" bg-white shadow-md rounded-lg py-10 px-5 mb-10 mx-5"
       >
-        {error && <div className="bg-red-800 text-white text-center p-3 rounded-md mb-2 font-bold uppercase"><p>Es obligatorio Llenar todos los campos</p></div>}
+        {error && <Error>
+          <p>Es obligatorio Llenar todos los campos</p>
+          </Error>}
 
         <div className="mb-5">
           <label
@@ -137,7 +155,7 @@ const Formularios = ({pacientes, setPacientes}) => {
         <input
           type="submit"
           className="bg-indigo-600 w-full p-3 rounded-md text-white uppercase font-bold hover:bg-indigo-800 cursor-pointer transition-all"
-          value="Agregar Paciente"
+          value={paciente.id ? "Editar Paciente" : "Agragar Paciente"}
         />
       </form>
     </div>

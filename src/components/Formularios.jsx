@@ -32,36 +32,57 @@ const Formularios = ({pacientes, setPacientes, paciente ,setPaciente}) => {
     e.preventDefault();
 
     // validacion del formulario
+
     if ([nombre, propietario, email, alta, sintomas].includes("")) {
       setError(true);
       return;
     }
     setError(false);
-    //objeto de paciente
+
     const objetoPaciente = {
       nombre,
       propietario,
       email,
       alta,
       sintomas,
-      id: generarId(),
+     
     };
+    
+    
 
-    setPacientes([...pacientes, objetoPaciente]);
+    if (paciente.id ){
+      // editando el registro
+     objetoPaciente.id = paciente.id;
+
+     const pacientesActualizados = pacientes.map(pacienteState => pacienteState.id === paciente.id ? objetoPaciente : pacienteState)
+
+     setPacientes(pacientesActualizados);
+     setPaciente({})
+    
+    }
+    else {
+      //nuevo registro
+      objetoPaciente.id = generarId();
+      setPacientes([...pacientes, objetoPaciente]);
+    }
+
+    
+    //reinicio del formulario
 
     setNombre("");
     setPropietario("");
     setEmail("");
     setAlta("");
     setSintomas("");
-  };
+
+  }
 
   return (
     <div className="md:w-1/2 lg:w-2/5">
-      <h2 className=" font-black text-3xl text-center">
+      <h2 className=" font-bold text-white text-3xl text-center bg-purple-700 p-5 rounded-md mx-2">
         Seguimiento De Pacientes
       </h2>
-      <p className=" text-lg mt-5 text-center mb-10 font-bold">
+      <p className=" text-lg mt-5 text-center mb-10 font-bold bg-green-100 p-1 mx-2 rounded-md">
         Añade Pacientes y {""}
         <span className=" text-indigo-600 ">Administralos</span>
       </p>
